@@ -3,7 +3,69 @@
 requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "kuhl-haus-metrics"
+description = "Add a short description here!"
+authors = [
+  { name = "Tom Pounders", email = "git@oldschool.engineer" },
+]
+readme = "README.rst"
+requires-python = ">=3.12"
+license = "MIT"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python"
+]
+dependencies = [
+    'importlib-metadata; python_version<"3.8"'
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/kuhl-haus"
+Documentation = "https://github.com/kuhl-haus/metrics"
+Source = "https://github.com/kuhl-haus/metrics"
+Changelog = "https://github.com/kuhl-haus/metrics"
+Tracker = "https://github.com/kuhl-haus/metrics/issues"
+
+[project.optional-dependencies]
+testing = [
+    "setuptools",
+    "pytest",
+    "pytest-cov"
+]
+
+# [project.scripts]
+# script-name = "kuhl_haus.metrics.module:function"
+# fibonacci = "kuhl_haus.metrics.skeleton:run"
+
+[tool.setuptools]
+zip-safe = true
+include-package-data = true
+package-dir = {"" = "src"}
+packages = {find = {where = ["src"], exclude = ["tests"]}}
+
 [tool.setuptools_scm]
 # For smarter version schemes and other configuration options,
 # check out https://github.com/pypa/setuptools_scm
 version_scheme = "no-guess-dev"
+
+[tool.pytest.ini_options]
+addopts = "--verbose"
+norecursedirs = ["dist", "build", ".tox"]
+testpaths = ["tests"]
+
+[tool.devpi.upload]
+no_vcs = 1
+formats = ["bdist_wheel"]
+
+[tool.flake8]
+max_line_length = 88
+extend_ignore = ["E203", "W503"]
+exclude = [".tox", "build", "dist", ".eggs", "docs/conf.py"]
+
+[tool.pyscaffold]
+version = "4.6"
+package = "metrics"
+extensions = ["namespace"]
+namespace = "kuhl_haus"
