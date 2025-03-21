@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kuhl-haus-metrics"
-description = "Add a short description here!"
+version = "0.1.0"
+description = "Application logging and instrumentation"
 authors = [
   { name = "Tom Pounders", email = "git@oldschool.engineer" },
 ]
@@ -19,7 +20,7 @@ classifiers = [
 dependencies = [
     'importlib-metadata; python_version<"3.8"'
 ]
-dynamic = ["version"]
+# dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/kuhl-haus"
@@ -45,10 +46,10 @@ include-package-data = true
 package-dir = {"" = "src"}
 packages = {find = {where = ["src"], exclude = ["tests"]}}
 
-[tool.setuptools_scm]
+# [tool.setuptools_scm]
 # For smarter version schemes and other configuration options,
 # check out https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
+# version_scheme = "no-guess-dev"
 
 [tool.pytest.ini_options]
 addopts = "--verbose"
