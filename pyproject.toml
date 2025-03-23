@@ -24,10 +24,10 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/kuhl-haus"
-Documentation = "https://github.com/kuhl-haus/metrics"
-Source = "https://github.com/kuhl-haus/metrics"
-Changelog = "https://github.com/kuhl-haus/metrics"
-Tracker = "https://github.com/kuhl-haus/metrics/issues"
+Documentation = "https://github.com/kuhl-haus/kuhl-haus-metrics/wiki"
+Source = "https://github.com/kuhl-haus/kuhl-haus-metrics"
+Changelog = "https://github.com/kuhl-haus/kuhl-haus-metrics/commits"
+Tracker = "https://github.com/kuhl-haus/kuhl-haus-metrics/issues"
 
 [project.optional-dependencies]
 testing = [
