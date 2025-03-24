@@ -33,16 +33,16 @@ license = {file = "LICENSE.txt"}
 [project.urls]
 Homepage = "https://github.com/kuhl-haus"
 Documentation = "https://github.com/kuhl-haus/kuhl-haus-metrics/wiki"
-Source = "https://github.com/kuhl-haus/kuhl-haus-metrics"
+Source = "https://github.com/kuhl-haus/kuhl-haus-metrics.git"
 Changelog = "https://github.com/kuhl-haus/kuhl-haus-metrics/commits"
 Tracker = "https://github.com/kuhl-haus/kuhl-haus-metrics/issues"
 
 [project.optional-dependencies]
 testing = [
-    "pytest~=8.3.5",
-    # "setuptools~=76.1.0",
+    "setuptools~=76.1.0",
     "pdm-backend",
-    "pytest-cov"
+    "pytest~=8.3.5",
+    "pytest-cov~=6.0.0",
 ]
 
 # [project.scripts]
