@@ -1,10 +1,6 @@
 fastapi~=0.115.11
-numpy~=2.2.3
-requests~=2.32.3
-pydantic~=2.10.6
 importlib_metadata~=8.6.1
+dataclasses-json~=0.6.7
 setuptools~=76.1.0
 pytest~=8.3.5
-dataclasses~=0.6
-dataclasses-json~=0.6.7
-pyOpenSSL~=25.0.0
+pytest-cov~=6.0.0

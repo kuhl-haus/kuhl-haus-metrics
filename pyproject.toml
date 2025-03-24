@@ -1,26 +1,34 @@
 [build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
-build-backend = "setuptools.build_meta"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [project]
 name = "kuhl-haus-metrics"
-version = "0.1.0"
+version = "0.2.0"
 description = "Application logging and instrumentation"
 authors = [
-  { name = "Tom Pounders", email = "git@oldschool.engineer" },
+    { name = "Tom Pounders", email = "git@oldschool.engineer" },
 ]
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"
+
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python"
 ]
 dependencies = [
-    'importlib-metadata; python_version<"3.8"'
+    "fastapi~=0.115.11",
+    "importlib_metadata~=8.6.1",
+    "dataclasses-json~=0.6.7",
+    "importlib-metadata~=8.6.1",
+    "setuptools~=76.1.0",
+    "pytest~=8.3.5",
+    "pytest-cov~=6.0.0",
 ]
+
 # dynamic = ["version"]
+
+license = {file = "LICENSE.txt"}
 
 [project.urls]
 Homepage = "https://github.com/kuhl-haus"
@@ -31,8 +39,9 @@ Tracker = "https://github.com/kuhl-haus/kuhl-haus-metrics/issues"
 
 [project.optional-dependencies]
 testing = [
-    "setuptools",
-    "pytest",
+    "pytest~=8.3.5",
+    # "setuptools~=76.1.0",
+    "pdm-backend",
     "pytest-cov"
 ]
 
@@ -52,7 +61,7 @@ packages = {find = {where = ["src"], exclude = ["tests"]}}
 # version_scheme = "no-guess-dev"
 
 [tool.pytest.ini_options]
-addopts = "--verbose"
+addopts = ["--verbose"]
 norecursedirs = ["dist", "build", ".tox"]
 testpaths = ["tests"]
 
@@ -70,3 +79,10 @@ version = "4.6"
 package = "metrics"
 extensions = ["namespace"]
 namespace = "kuhl_haus"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+package-dir = "src"
+includes = ["src/kuhl_haus"]

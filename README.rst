@@ -34,10 +34,9 @@ kuhl-haus-metrics
 =================
 
 
-    Add a short description here!
+Application logging and instrumentation
 
-
-A longer description of your project goes here...
+... more to come!
 
 
 .. _pyscaffold-notes:
