@@ -7,7 +7,7 @@ WORKDIR /libs/metrics
 COPY . /libs/metrics/
 
 # Install dependencies and build/install package
-RUN pdm install
+RUN pdm install -G testing
 
 # Run tests
 RUN pdm run pytest tests -v

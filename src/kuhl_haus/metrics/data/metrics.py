@@ -172,7 +172,7 @@ class Metrics:
         0.10.0   ->      1000
         0.99.0   ->      9900
         0.100.0  ->      9900
-        1.0.0    ->     1,000
+        1.0.0    ->    10,000
         """
         base_version = version_string.split('-')[0].split('+')[0]
         parts = base_version.split('.')
