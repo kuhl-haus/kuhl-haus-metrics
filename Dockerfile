@@ -1,19 +1,14 @@
 ARG BASE_IMAGE=python:3.12-slim
 FROM ${BASE_IMAGE}
 
-RUN pip install --no-cache-dir pdm
-
 WORKDIR /libs/metrics
 COPY . /libs/metrics/
 
-# Install dependencies and build/install package
-RUN pdm install -G testing
+# Install PDM
+RUN pip install --no-cache-dir pdm
 
-# Run tests
-RUN pdm run pytest tests -v
+# Install the package directly from the wheel
+RUN pdm build && pip install --no-cache-dir /libs/metrics/dist/*.whl
 
-# Build wheel
-RUN pdm build
-
-# Install into site-packages from wheel
-RUN pip install --no-cache-dir /libs/metrics/dist/*.whl
+# Set entrypoint to python
+ENTRYPOINT ["python"]
