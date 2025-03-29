@@ -125,11 +125,15 @@ jobs:
         path: dist/
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://upload.pypi.org/legacy/
+        skip-existing: true
+
 
   github-release:
     name: Create GitHub Release
     if: startsWith(github.ref, 'refs/tags/')  # only release on tag pushes
-    needs: [publish-to-pypi, build-docker]
+    needs: [build-and-test, publish-to-pypi, build-docker]
     runs-on: ubuntu-latest
 
     permissions:
@@ -140,7 +144,7 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v4
       with:
-        name: python-package-distributions-${{ needs.publish-to-pypi.needs.build-and-test.outputs.run_id }}
+        name: python-package-distributions-${{ needs.build-and-test.outputs.run_id }}
         path: dist/
     - name: Sign the dists with Sigstore
       uses: sigstore/gh-action-sigstore-python@v3.0.0
@@ -163,6 +167,7 @@ jobs:
         gh release upload
         "$GITHUB_REF_NAME" dist/**
         --repo "$GITHUB_REPOSITORY"
+
 
   publish-to-testpypi:
     name: Publish to TestPyPI
