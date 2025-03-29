@@ -106,34 +106,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  publish-to-pypi:
-    name: Publish to PyPI
-    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/kuhl-haus-metrics
-    permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
-
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions-${{ needs.build-and-test.outputs.run_id }}
-        path: dist/
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://upload.pypi.org/legacy/
-        skip-existing: true
-
-
   github-release:
     name: Create GitHub Release
     if: startsWith(github.ref, 'refs/tags/')  # only release on tag pushes
-    needs: [build-and-test, publish-to-pypi, build-docker]
+    needs: [build-and-test, build-docker]
     runs-on: ubuntu-latest
 
     permissions:
@@ -168,10 +144,9 @@ jobs:
         "$GITHUB_REF_NAME" dist/**
         --repo "$GITHUB_REPOSITORY"
 
-
   publish-to-testpypi:
     name: Publish to TestPyPI
-    needs: build-and-test
+    needs: [build-and-test]
     runs-on: ubuntu-latest
     environment:
       name: testpypi
@@ -189,4 +164,27 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
+
+  publish-to-pypi:
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    needs: [build-and-test, github-release, publish-to-testpypi]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/kuhl-haus-metrics
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions-${{ needs.build-and-test.outputs.run_id }}
+        path: dist/
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://upload.pypi.org/legacy/
         skip-existing: true
