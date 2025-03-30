@@ -2,12 +2,13 @@
    please update the URLs accordingly 
 
 [![ReadTheDocs](https://readthedocs.org/projects/kuhl-haus-metrics/badge/?version=latest)](https://kuhl-haus-metrics.readthedocs.io/en/stable/)
-[![PyPI-Server](https://img.shields.io/pypi/v/kuhl-haus-metrics.svg)](https://pypi.org/project/kuhl-haus-metrics/)
+
 [![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/kuhl-haus-metrics.svg)](https://anaconda.org/conda-forge/kuhl-haus-metrics)
 [![Monthly Downloads](https://pepy.tech/badge/kuhl-haus-metrics/month)](https://pepy.tech/project/kuhl-haus-metrics)
 -->
 
-[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
+[![PyPI-Server](https://img.shields.io/pypi/v/kuhl-haus-metrics.svg)](https://pypi.org/project/kuhl-haus-metrics/)
+[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)  
 
 # kuhl-haus-metrics
 
