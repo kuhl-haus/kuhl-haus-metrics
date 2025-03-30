@@ -30,7 +30,7 @@ jobs:
       run: pdm install -G testing
 
     - name: Run tests with coverage
-      run: pdm run pytest --cov=kuhl-haus-metrics --cov-report=html tests -v
+      run: pdm run pytest --cov=kuhl_haus.metrics --cov-report=html tests -v
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
