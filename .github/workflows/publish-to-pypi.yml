@@ -29,8 +29,14 @@ jobs:
     - name: Install dependencies
       run: pdm install -G testing
 
-    - name: Run tests
-      run: pdm run pytest tests -v
+    - name: Run tests with coverage
+      run: pdm run pytest --cov=kuhl-haus-metrics --cov-report=html tests -v
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: htmlcov/
 
     - name: Build package
       run: pdm build
