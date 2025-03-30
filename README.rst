@@ -23,6 +23,9 @@
         :alt: Twitter
         :target: https://twitter.com/kuhl-haus-metrics
 
+.. image:: https://img.shields.io/pypi/v/kuhl-haus-metrics.svg
+    :alt: PyPI-Server
+    :target: https://pypi.org/project/kuhl-haus-metrics/
 .. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
