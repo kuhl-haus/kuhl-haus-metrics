@@ -8,8 +8,10 @@ from typing import Callable, Dict, Union
 
 class ThreadPool:
     size: int
+    idle_time_out: int
+    clean_up_sleep: float
 
-    def __init__(self, logger: Logger, size: int = 10):
+    def __init__(self, logger: Logger, size: int = 10, idle_time_out: int = 360, clean_up_sleep: float = 0.250):
         """
         TODO: Replace a bunch of this with ThreadPoolExecutor
         https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor
@@ -17,20 +19,24 @@ class ThreadPool:
         :param logger:
         :param size:
         """
-        self.idle_time_out = 360
-        self.clean_up_sleep = 0.250
-        self.size = size
         self.__logger = logger
+        self.size = size
+        self.idle_time_out = idle_time_out
+        self.clean_up_sleep = clean_up_sleep
         self.__mutex = RLock()
         self.__thread_pool = BoundedSemaphore(value=size)
         self.__threads: Dict[str, Thread] = {}
-        self.__cleanup_thread = Thread(target=self.cleanup_threads, daemon=True)
+        self.__cleanup_thread = Thread(target=self.__cleanup_threads, daemon=True)
         self.__cleanup_thread.start()
 
     @property
     def thread_count(self):
         with self.__mutex:
             return len(self.__threads)
+
+    @property
+    def clean_up_thread_is_alive(self):
+        return self.__cleanup_thread.is_alive()
 
     def start_task(
         self,
@@ -63,14 +69,14 @@ class ThreadPool:
                 self.__notify_cleanup()
 
     def __notify_cleanup(self):
-        if self.__cleanup_thread.is_alive():
+        if self.clean_up_thread_is_alive:
             self.__logger.debug("Cleanup thread is alive... not starting a new thread.")
             return
         self.__logger.debug("Cleanup thread is not alive... starting a new thread.")
-        self.__cleanup_thread = Thread(target=self.cleanup_threads, daemon=True)
+        self.__cleanup_thread = Thread(target=self.__cleanup_threads, daemon=True)
         self.__cleanup_thread.start()
 
-    def cleanup_threads(self):
+    def __cleanup_threads(self):
         idle_timer = self.idle_time_out
         while idle_timer > 0:
             deleted_threads = []
