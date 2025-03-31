@@ -4,11 +4,18 @@
 [![ReadTheDocs](https://readthedocs.org/projects/kuhl-haus-metrics/badge/?version=latest)](https://kuhl-haus-metrics.readthedocs.io/en/stable/)
 
 [![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/kuhl-haus-metrics.svg)](https://anaconda.org/conda-forge/kuhl-haus-metrics)
-[![Monthly Downloads](https://pepy.tech/badge/kuhl-haus-metrics/month)](https://pepy.tech/project/kuhl-haus-metrics)
+
 -->
 
-[![PyPI-Server](https://img.shields.io/pypi/v/kuhl-haus-metrics.svg)](https://pypi.org/project/kuhl-haus-metrics/)
-[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)  
+[![License](https://img.shields.io/github/license/kuhl-haus/kuhl-haus-metrics)](https://github.com/kuhl-haus/kuhl-haus-metrics/blob/mainline/LICENSE.txt)
+[![PyPI](https://img.shields.io/pypi/v/kuhl-haus-metrics.svg)](https://pypi.org/project/kuhl-haus-metrics/)
+[![Build Status](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/publish-to-pypi.yml/badge.svg)](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/publish-to-pypi.yml)
+[![CodeQL](https://github.com/kuhl-haus/kuhl-haus-metrics/workflows/CodeQL/badge.svg)](https://github.com/kuhl-haus/kuhl-haus-metrics/workflows/CodeQL/)
+[![codecov](https://codecov.io/gh/kuhl-haus/kuhl-haus-metrics/branch/mainline/graph/badge.svg)](https://codecov.io/gh/kuhl-haus/kuhl-haus-metrics)
+[![GitHub issues](https://img.shields.io/github/issues/kuhl-haus/kuhl-haus-metrics)](https://github.com/kuhl-haus/kuhl-haus-metrics/issues)
+[![Downloads](https://static.pepy.tech/badge/kuhl-haus-metrics/month)](https://pepy.tech/project/kuhl-haus-metrics)
+
+
 
 # kuhl-haus-metrics
 
@@ -16,7 +23,4 @@ Application logging and instrumentation
 
 ... more to come!
 
-## Note
 
-This project has been set up using PyScaffold 4.6. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
