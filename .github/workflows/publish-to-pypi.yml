@@ -33,13 +33,19 @@ jobs:
       run: pdm install -G testing
 
     - name: Run tests with coverage
-      run: pdm run pytest --cov=kuhl_haus.metrics --cov-report=html tests -v
+      run: pdm run pytest --cov=kuhl_haus.metrics --cov-report=html --cov-report=xml tests -v
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: htmlcov/
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
 
     - name: Build package
       run: pdm build
