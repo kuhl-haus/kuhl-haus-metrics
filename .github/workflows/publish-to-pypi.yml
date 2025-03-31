@@ -41,11 +41,11 @@ jobs:
         name: coverage-report
         path: htmlcov/
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
+        slug: kuhl-haus/kuhl-haus-metrics
         fail_ci_if_error: true
 
     - name: Build package
