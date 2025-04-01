@@ -19,9 +19,8 @@ def thread_pool_size():
 
 
 @pytest.fixture
-def mock_thread_pool(mock_logger, thread_pool_size):
-    mock = ThreadPool(mock_logger, thread_pool_size)
-    return mock
+def thread_pool_with_mock_logger(mock_logger, thread_pool_size):
+    return ThreadPool(mock_logger, thread_pool_size)
 
 
 @pytest.fixture
@@ -69,20 +68,20 @@ def test_init(mock_logger, thread_pool_size):
     assert thread_pool.clean_up_thread_is_alive is True
 
 
-def test_thread_count_property(mock_thread_pool, task_func):
+def test_thread_count_property(thread_pool_with_mock_logger, task_func):
     """Test the thread_count property correctly reports active threads."""
     # Arrange
 
     # Act
-    mock_thread_pool.start_task("task1", task_func, {})
-    thread_count_after_one = mock_thread_pool.thread_count
+    thread_pool_with_mock_logger.start_task("task1", task_func, {})
+    thread_count_after_one = thread_pool_with_mock_logger.thread_count
 
-    mock_thread_pool.start_task("task2", task_func, {})
-    thread_count_after_two = mock_thread_pool.thread_count
+    thread_pool_with_mock_logger.start_task("task2", task_func, {})
+    thread_count_after_two = thread_pool_with_mock_logger.thread_count
 
     # Wait for tasks to complete
     time.sleep(0.3)
-    thread_count_after_completion = mock_thread_pool.thread_count
+    thread_count_after_completion = thread_pool_with_mock_logger.thread_count
 
     # Assert
     assert thread_count_after_one == 1
@@ -90,13 +89,13 @@ def test_thread_count_property(mock_thread_pool, task_func):
     assert thread_count_after_completion == 0
 
 
-def test_start_task_basic(mock_thread_pool, test_func):
+def test_start_task_basic(thread_pool_with_mock_logger, test_func):
     """Test starting a basic task."""
     # Arrange
     kwargs = {"value": 42}
 
     # Act
-    mock_thread_pool.start_task("test_task", test_func, kwargs)
+    thread_pool_with_mock_logger.start_task("test_task", test_func, kwargs)
 
     # Wait for task to execute
     time.sleep(0.1)
@@ -105,16 +104,16 @@ def test_start_task_basic(mock_thread_pool, test_func):
     test_func.assert_called_once_with(value=42)
 
 
-def test_start_task_same_name_alive(mock_thread_pool, task_func):
+def test_start_task_same_name_alive(thread_pool_with_mock_logger, task_func):
     """Test starting a task with the same name while previous is still alive."""
     # Arrange
     second_func = MagicMock()
 
     # Act
-    mock_thread_pool.start_task("same_name", task_func, {})
+    thread_pool_with_mock_logger.start_task("same_name", task_func, {})
 
     # Try to start another task with the same name before first completes
-    mock_thread_pool.start_task("same_name", second_func, {})
+    thread_pool_with_mock_logger.start_task("same_name", second_func, {})
 
     # Wait and verify
     time.sleep(0.3)
@@ -123,16 +122,16 @@ def test_start_task_same_name_alive(mock_thread_pool, task_func):
     second_func.assert_not_called()  # Second task should not be executed
 
 
-def test_start_task_same_name_completed(mock_thread_pool, test_func):
+def test_start_task_same_name_completed(thread_pool_with_mock_logger, test_func):
     """Test starting a task with the same name after previous has completed."""
     # Arrange
     second_func = MagicMock()
 
     # Act
-    mock_thread_pool.start_task("same_name", test_func, {})
+    thread_pool_with_mock_logger.start_task("same_name", test_func, {})
     time.sleep(0.1)  # Let the first task complete
 
-    mock_thread_pool.start_task("same_name", second_func, {})
+    thread_pool_with_mock_logger.start_task("same_name", second_func, {})
     time.sleep(0.1)  # Let the second task complete
 
     # Assert
@@ -140,35 +139,35 @@ def test_start_task_same_name_completed(mock_thread_pool, test_func):
     second_func.assert_called_once()
 
 
-def test_pool_size_limit_non_blocking(mock_thread_pool, thread_pool_size, test_func, task_func):
+def test_pool_size_limit_non_blocking(thread_pool_with_mock_logger, thread_pool_size, test_func, task_func):
     """Test pool size limits with non-blocking calls."""
     # Arrange
     blocking = False
 
     # Act - Fill the pool
     for i in range(thread_pool_size):
-        mock_thread_pool.start_task(f"task{i}", task_func, {})
+        thread_pool_with_mock_logger.start_task(f"task{i}", task_func, {})
 
     # Try to add one more task (non-blocking)
-    mock_thread_pool.start_task("extra_task", test_func, {}, blocking)
+    thread_pool_with_mock_logger.start_task("extra_task", test_func, {}, blocking)
 
     # Assert
-    assert mock_thread_pool.thread_count == thread_pool_size
+    assert thread_pool_with_mock_logger.thread_count == thread_pool_size
     test_func.assert_not_called()  # Extra task should not run
 
 
-def test_pool_size_limit_blocking(mock_thread_pool, thread_pool_size, test_func, task_func):
+def test_pool_size_limit_blocking(thread_pool_with_mock_logger, thread_pool_size, test_func, task_func):
     """Test pool size limits with blocking calls."""
     # Arrange
     blocking = True
 
     # Act - Fill the pool
     for i in range(thread_pool_size):
-        mock_thread_pool.start_task(f"task{i}", task_func, {})
+        thread_pool_with_mock_logger.start_task(f"task{i}", task_func, {})
 
     # Start a thread to add one more task (blocking)
     def add_blocking_task():
-        mock_thread_pool.start_task("blocking_task", test_func, {}, blocking)
+        thread_pool_with_mock_logger.start_task("blocking_task", test_func, {}, blocking)
 
     blocking_thread = Thread(target=add_blocking_task)
     blocking_thread.start()
@@ -186,17 +185,17 @@ def test_pool_size_limit_blocking(mock_thread_pool, thread_pool_size, test_func,
     test_func.assert_called_once()  # Should run once pool has space
 
 
-def test_cleanup_threads(mock_thread_pool, thread_pool_size, test_func, task_func):
+def test_cleanup_threads(thread_pool_with_mock_logger, thread_pool_size, test_func, task_func):
     """Test that threads are cleaned up after completion."""
     # Arrange
 
     # Act
     for i in range(thread_pool_size):
-        mock_thread_pool.start_task(f"cleanup_task{i}", task_func, {})
+        thread_pool_with_mock_logger.start_task(f"cleanup_task{i}", task_func, {})
 
-    count_during = mock_thread_pool.thread_count
+    count_during = thread_pool_with_mock_logger.thread_count
     time.sleep(0.3)  # Wait for tasks to complete and cleanup to run
-    count_after = mock_thread_pool.thread_count
+    count_after = thread_pool_with_mock_logger.thread_count
 
     # Assert
     assert count_during == thread_pool_size
@@ -204,7 +203,7 @@ def test_cleanup_threads(mock_thread_pool, thread_pool_size, test_func, task_fun
 
 
 @patch('kuhl_haus.metrics.tasks.thread_pool.Thread')
-def test_error_handling(patched_thread, mock_thread_pool, error_func, mock_logger):
+def test_error_handling(patched_thread, thread_pool_with_mock_logger, error_func, mock_logger):
     """Test error handling in tasks."""
     # Arrange
     # Act
@@ -213,7 +212,7 @@ def test_error_handling(patched_thread, mock_thread_pool, error_func, mock_logge
     mock_thread.start.side_effect = TestException
     patched_thread.return_value = mock_thread
 
-    mock_thread_pool.start_task("error_task", error_func, {})
+    thread_pool_with_mock_logger.start_task("error_task", error_func, {})
     time.sleep(0.1)  # Give error time to be caught
 
     # Assert
@@ -226,21 +225,32 @@ def test_error_handling(patched_thread, mock_thread_pool, error_func, mock_logge
 def test_cleanup_thread_restart(patched_thread, mock_logger, test_func):
     """Test that the cleanup thread is restarted if needed."""
     # Arrange
-    mock_thread = create_autospec(Thread)
-    mock_thread.is_alive = MagicMock()
-    mock_thread.is_alive.side_effect = [False, True, True, False, False, False, False, False, False]
-    patched_thread.return_value = mock_thread
+    cleanup_thread_1 = create_autospec(Thread)
+    cleanup_thread_1.is_alive = MagicMock()
+    cleanup_thread_1.start = MagicMock()
+    cleanup_thread_1.is_alive.return_value = False
+
+    task_thread = create_autospec(Thread)
+    task_thread.is_alive = MagicMock()
+    task_thread.start = MagicMock()
+    task_thread.is_alive.side_effect = [True, False, False, False, False, False, False]
+
+    cleanup_thread_2 = create_autospec(Thread)
+    cleanup_thread_2.is_alive = MagicMock()
+    cleanup_thread_2.start = MagicMock()
+    cleanup_thread_2.is_alive.return_value = True
+
+    patched_thread.side_effect = [cleanup_thread_1, task_thread, cleanup_thread_2]
     sut = ThreadPool(logger=mock_logger, size=3, idle_time_out=0, clean_up_sleep=0.01)
 
-    # Wait for cleanup thread to exit
-    time.sleep(0.1)
-    before_start_task_result = sut.clean_up_thread_is_alive
+    before_start_clean_up_thread_is_alive = sut.clean_up_thread_is_alive
     # Start a task to trigger a new cleanup thread
     sut.start_task("new_task", test_func, {})
-    after_start_task_result = sut.clean_up_thread_is_alive
-    time.sleep(0.1)
+    after_start_clean_up_thread_is_alive = sut.clean_up_thread_is_alive
 
     # Assert
-    assert before_start_task_result is False
-    assert after_start_task_result is True
-    assert before_start_task_result != after_start_task_result
+    assert before_start_clean_up_thread_is_alive is False
+    assert after_start_clean_up_thread_is_alive is True
+    assert before_start_clean_up_thread_is_alive != after_start_clean_up_thread_is_alive
+    assert patched_thread.call_count == 3
+    assert "starting a new thread" in str(mock_logger.debug.call_args)
