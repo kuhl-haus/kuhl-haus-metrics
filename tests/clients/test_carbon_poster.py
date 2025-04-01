@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from carbon_poster import CarbonPoster
+from kuhl_haus.metrics.clients.carbon_poster import CarbonPoster
 
 
 @pytest.fixture
