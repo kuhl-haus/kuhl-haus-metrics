@@ -1,8 +1,9 @@
-import pytest
-from unittest.mock import Mock, patch, call, create_autospec, MagicMock
 import time
 from logging import Logger
-from threading import BoundedSemaphore, RLock, Thread
+from threading import Thread
+from unittest.mock import patch, create_autospec, MagicMock
+
+import pytest
 
 from kuhl_haus.metrics.tasks.thread_pool import ThreadPool
 
