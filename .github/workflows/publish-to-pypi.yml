@@ -67,6 +67,10 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write  # IMPORTANT: mandatory for publishing packages
+      # https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages#about-scopes-and-permissions-for-package-registries
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -111,8 +115,6 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
-        permissions:
-          packages: write
         with:
           context: .
           file: ./Dockerfile
