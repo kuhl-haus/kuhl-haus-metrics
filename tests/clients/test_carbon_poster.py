@@ -62,7 +62,7 @@ class TestCarbonPosterInit:
 
 
 class TestPostMetrics:
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_sends_valid_metrics_correctly(self, mock_socket, carbon_poster, valid_metrics):
         # Arrange
         mock_sock_instance = MagicMock()
@@ -81,19 +81,19 @@ class TestPostMetrics:
         )
         mock_sock_instance.sendall.assert_called_once_with(expected_message)
 
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_raises_type_error_when_metrics_not_list(self, mock_socket, carbon_poster):
         # Arrange & Act & Assert
         with pytest.raises(TypeError, match="metrics"):
             carbon_poster.post_metrics("not_a_list")
 
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_raises_type_error_when_metrics_items_not_tuples(self, mock_socket, carbon_poster):
         # Arrange & Act & Assert
         with pytest.raises(TypeError, match="metrics"):
             carbon_poster.post_metrics([1, 2, 3])
 
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_handles_empty_metrics_list(self, mock_socket, carbon_poster):
         # Arrange
         mock_sock_instance = MagicMock()
@@ -109,7 +109,7 @@ class TestPostMetrics:
         # Assert
         mock_sock_instance.sendall.assert_called_once_with(expected_message)
 
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_handles_connection_error(self, mock_socket, carbon_poster, valid_metrics):
         # Arrange
         mock_sock_instance = MagicMock()
@@ -120,7 +120,7 @@ class TestPostMetrics:
         with pytest.raises(socket.error, match="Connection refused"):
             carbon_poster.post_metrics(valid_metrics)
 
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_handles_send_error(self, mock_socket, carbon_poster, valid_metrics):
         # Arrange
         mock_sock_instance = MagicMock()
@@ -133,7 +133,7 @@ class TestPostMetrics:
 
 
 class TestFunctionalCore:
-    @patch('carbon_poster.socket.socket')
+    @patch('kuhl_haus.metrics.clients.carbon_poster.socket.socket')
     def test_functional_approach_with_dependency_injection(self, mock_socket):
         # Arrange
         mock_sock_instance = MagicMock()
