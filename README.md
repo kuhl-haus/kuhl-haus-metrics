@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/github/license/kuhl-haus/kuhl-haus-metrics)](https://github.com/kuhl-haus/kuhl-haus-metrics/blob/mainline/LICENSE.txt)
 [![PyPI](https://img.shields.io/pypi/v/kuhl-haus-metrics.svg)](https://pypi.org/project/kuhl-haus-metrics/)
 [![Build Status](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/publish-to-pypi.yml/badge.svg)](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/publish-to-pypi.yml)
-[![CodeQL](https://github.com/kuhl-haus/kuhl-haus-metrics/workflows/CodeQL/badge.svg)](https://github.com/kuhl-haus/kuhl-haus-metrics/workflows/CodeQL/)
+[![CodeQL](https://github.com/kuhl-haus/kuhl-haus-metrics/workflows/CodeQL/badge.svg)](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/github-code-scanning/codeql/)
 [![codecov](https://codecov.io/gh/kuhl-haus/kuhl-haus-metrics/branch/mainline/graph/badge.svg)](https://codecov.io/gh/kuhl-haus/kuhl-haus-metrics)
 [![GitHub issues](https://img.shields.io/github/issues/kuhl-haus/kuhl-haus-metrics)](https://github.com/kuhl-haus/kuhl-haus-metrics/issues)
 [![Downloads](https://static.pepy.tech/badge/kuhl-haus-metrics/month)](https://pepy.tech/project/kuhl-haus-metrics)
