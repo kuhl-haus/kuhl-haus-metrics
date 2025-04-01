@@ -111,6 +111,8 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
+        permissions:
+          packages: write
         with:
           context: .
           file: ./Dockerfile
