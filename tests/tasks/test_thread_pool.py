@@ -104,13 +104,13 @@ def test_start_task_basic(thread_pool_with_mock_logger, test_func):
     test_func.assert_called_once_with(value=42)
 
 
-def test_start_task_same_name_alive(thread_pool_with_mock_logger, task_func):
+def test_start_task_same_name_alive(thread_pool_with_mock_logger, long_running_func):
     """Test starting a task with the same name while previous is still alive."""
     # Arrange
     second_func = MagicMock()
 
     # Act
-    thread_pool_with_mock_logger.start_task("same_name", task_func, {})
+    thread_pool_with_mock_logger.start_task("same_name", long_running_func, {})
 
     # Try to start another task with the same name before first completes
     thread_pool_with_mock_logger.start_task("same_name", second_func, {})
