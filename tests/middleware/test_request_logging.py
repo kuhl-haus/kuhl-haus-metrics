@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 from fastapi import FastAPI
@@ -19,6 +19,11 @@ def valid_test_server_name():
 @pytest.fixture
 def valid_url_path():
     return "/test"
+
+
+@pytest.fixture
+def null_url_path():
+    return "/null"
 
 
 @pytest.fixture
@@ -66,7 +71,7 @@ def mock_success_message():
 
 # Create a test app with the middleware
 @pytest.fixture
-def app(mock_recorder, mock_success_message, valid_url_path):
+def app(mock_recorder, mock_success_message, valid_url_path, null_url_path):
     app = FastAPI()
 
     # Create middleware class using your function
@@ -87,6 +92,10 @@ def app(mock_recorder, mock_success_message, valid_url_path):
     @app.get("/")
     async def default_endpoint():
         return mock_success_message
+
+    @app.get(null_url_path)
+    async def null_endpoint():
+        return
 
     return app
 
@@ -124,7 +133,6 @@ def test_request_metrics_successful_request(client, mock_recorder, valid_url_pat
 def test_request_metrics_with_content_length(
         mock_request,
         client,
-        # mock_call_next,
         mock_recorder,
         mock_success_message,
         valid_url_path,
@@ -132,16 +140,8 @@ def test_request_metrics_with_content_length(
 ):
     """Test request metrics middleware when response has Content-Length header."""
     # Arrange
-    mock_response = MagicMock(spec=Response)
-    mock_response.headers = {}
-    mock_call_next = MagicMock()
-    mock_call_next.return_value = mock_response
-
-    # response = mock_call_next(mock_request)
-    sut = request_metrics
 
     # Act
-    sut(mock_request, mock_call_next, mock_recorder)
     response = client.get(valid_url_path, headers={"host": valid_test_server_name})
 
     # Assert
@@ -152,6 +152,31 @@ def test_request_metrics_with_content_length(
     assert int(metrics.attributes['response_length']) == 21
     mock_recorder.log_metrics.assert_called_once_with(metrics)
     assert "Content-Length" in response.headers
+
+
+def test_request_metrics_with_null_content_length_header(
+        mock_request,
+        client,
+        mock_recorder,
+        mock_success_message,
+        null_url_path,
+        valid_test_server_name
+):
+    """Test request metrics middleware when response does not have a Content-Length header."""
+    # Arrange
+    mock_response = AsyncMock(spec=Response)
+    mock_response.headers = {}
+    mock_call_next = AsyncMock()
+    mock_call_next.return_value = mock_response
+
+    sut = request_metrics
+
+    # Act
+    _ = sut(mock_request, mock_call_next, mock_recorder)
+
+    # Assert
+    metrics = mock_recorder.get_metrics.return_value
+    assert 'response_length' not in metrics.attributes
 
 
 @patch('kuhl_haus.metrics.middleware.request_logging.time.perf_counter_ns')
@@ -168,13 +193,9 @@ def test_request_metrics_exception_handling(
     # Arrange
     test_exception = ValueError("Test error")
     mock_perf_counter.side_effect = test_exception
-    sut = request_metrics
-
-    # Act
 
     # Act & Assert
     with pytest.raises(ValueError, match="Test error"):
-        sut(mock_request, mock_call_next, mock_recorder)
         _ = client.get(valid_url_path, headers={"host": valid_test_server_name})
 
     metrics = mock_recorder.get_metrics.return_value
@@ -195,10 +216,10 @@ def test_request_metrics_path_normalization(
 ):
     """Test the normalization of URL paths into mnemonics."""
     # Arrange
-    sut = request_metrics
     test_cases = [
         ("/test/users", "test_users"),
         ("/", ""),
+        ("", ""),
         ("/test/users/123", "test_users_123"),
     ]
 
@@ -206,7 +227,6 @@ def test_request_metrics_path_normalization(
         mock_request.url.path = path
 
         # Act
-        sut(mock_request, mock_call_next, mock_recorder)
         _ = client.get(path, headers={"host": mock_request.headers['host']})
 
         # Assert
@@ -230,7 +250,6 @@ def test_request_metrics_millisecond_conversion(
     """Test correct conversion of nanoseconds to milliseconds."""
     # Arrange
     # Test different values to ensure proper conversion
-    sut = request_metrics
     test_cases = [
         (1_000_000, 1),  # 1ms
         (1_500_000, 1),  # 1.5ms should be truncated to 1ms
@@ -243,8 +262,8 @@ def test_request_metrics_millisecond_conversion(
         mock_perf_counter.side_effect = [1000, 1000 + ns_value, 3000, 3000]
 
         # Act
-        sut(mock_request, mock_call_next, mock_recorder)
         response = client.get(valid_url_path, headers={"host": valid_test_server_name})
+
         # Assert
         assert response.headers["X-Request-Time"] == str(ns_value)
         assert response.headers["X-Request-Time-MS"] == str(expected_ms)

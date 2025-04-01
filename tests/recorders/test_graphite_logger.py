@@ -246,11 +246,7 @@ def test_log_metrics_starts_tasks(
     ])
 
 
-@patch("kuhl_haus.metrics.recorders.graphite_logger.time")
-@patch("kuhl_haus.metrics.recorders.graphite_logger.random")
-def test_log_metrics_with_none_metrics_raises_attribute_error(
-        patched_random, patched_time, mock_logger, mock_carbon_poster, mock_thread_pool
-):
+def test_log_metrics_with_none_metrics_raises_attribute_error(mock_logger, mock_carbon_poster, mock_thread_pool):
     """Test that log_metrics raises AttributeError when given None."""
     # Arrange
     sut = GraphiteLogger.__new__(GraphiteLogger)
