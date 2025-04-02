@@ -1,4 +1,4 @@
-fastapi~=0.115.11
+fastapi~=0.115.12
 importlib_metadata~=8.6.1
 dataclasses-json~=0.6.7
 setuptools~=76.1.0
