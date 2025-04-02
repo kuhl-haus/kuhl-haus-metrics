@@ -3,7 +3,7 @@ importlib_metadata~=8.6.1
 dataclasses-json~=0.6.7
 setuptools~=76.1.0
 pytest~=8.3.5
-pytest-cov~=6.0.0
+pytest-cov~=6.1.0
 pytest-asyncio
 
 dataclasses~=0.6
