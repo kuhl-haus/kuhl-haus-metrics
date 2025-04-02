@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "kuhl-haus-metrics"
-version = "0.2.5"
+version = "0.2.6"
 description = "Application logging and instrumentation"
 authors = [
     { name = "Tom Pounders", email = "git@oldschool.engineer" },
@@ -17,7 +17,7 @@ classifiers = [
     "Programming Language :: Python"
 ]
 dependencies = [
-    "fastapi~=0.115.11",
+    "fastapi~=0.115.12",
     "importlib_metadata~=8.6.1",
     "dataclasses-json~=0.6.7",
     "importlib-metadata~=8.6.1",
@@ -36,12 +36,12 @@ Tracker = "https://github.com/kuhl-haus/kuhl-haus-metrics/issues"
 
 [project.optional-dependencies]
 testing = [
-    "setuptools~=76.1.0",
+    "setuptools~=78.1.0",
     "pdm-backend",
     "pytest~=8.3.5",
-    "pytest-cov~=6.0.0",
-    "pytest-asyncio",
-    "httpx",
+    "pytest-cov~=6.1.0",
+    "pytest-asyncio~=0.26.0",
+    "httpx~=0.28.1",
     "starlette~=0.46.1"
 ]
 
