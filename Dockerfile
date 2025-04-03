@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=python:3.12-slim
+ARG BASE_IMAGE=python:3.13-slim
 FROM ${BASE_IMAGE}
 
 WORKDIR /opt/kuhl_haus/metrics
