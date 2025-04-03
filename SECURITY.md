@@ -10,9 +10,8 @@ The following table indicates which versions of the project are currently receiv
 | < 0.2.0 | :x:                | Proof-of-concept - not supported |
 
 We generally support:
-- The most recent major version with all minor and patch releases
-- The previous major version with its latest minor release
-- **Security patches will be backported for 12 months** after a new major version release
+- The most recent major version with with its latest minor release.
+- Always update to the latest version of this patckage to keep up with security patches.  **Security patches will NOT be backported to earlier releases**.  
 
 ## Reporting a Vulnerability
 
@@ -21,9 +20,10 @@ We generally support:
 ### Reporting Process
 
 1. **Do NOT disclose security vulnerabilities publicly** via GitHub issues, discussions, or pull requests.
-2. Submit your report via email to ```security@kuhl-haus``` or through our private vulnerability reporting channel on GitHub.
-3. **Encrypt sensitive information** using our [PGP key](#pgp-key).
-4. Include the following details:
+2. If you believe you've found a security-related bug, we prefer that you fill out a [vulnerability report on GitHub](https://github.com/kuhl-haus/kuhl-haus-metrics/security/advisories/new) directly.
+3. Submit your report via email to `security` at `kuhl.haus` or through our private vulnerability reporting channel on GitHub.
+4. **Encrypt sensitive information** using our [PGP key](#pgp-key).
+5. Include the following details:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
@@ -54,14 +54,14 @@ We follow a **coordinated disclosure** process:
 ## Security Best Practices Used in This Project
 
 - **Automated Security Testing**: All commits to the mainline branch undergo [automated CodeQL scanning](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/github-code-scanning/codeql).
-- **Regular Dependency Updates**: We use Dependabot automation to keep dependencies updated.
+- **Regular Dependency Updates**: We use Dependabot to assist with keeping dependencies updated. [Dependabot Updates](https://github.com/kuhl-haus/kuhl-haus-metrics/actions/workflows/dependabot/dependabot-updates)
 - **Supply Chain Security**: We sign releases, use artifact verification, and publish to PyPI with a [Trusted Publisher](https://docs.pypi.org/trusted-publishers/).
 
 ## PGP Key
 
 For encrypted communication, please use our PGP key.
 
-Security Contact:  ```security@kuhl-haus```  
+Security Contact:  `security` at `kuhl.haus`  
 Fingerprint: `74d6f5d19c1747729c4c4d8403262a29b12a7124`  
 Key type: ECC (Curve25519)
 
