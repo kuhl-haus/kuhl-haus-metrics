@@ -19,11 +19,12 @@ We generally support:
 
 ### Reporting Process
 
-1. **Do NOT disclose security vulnerabilities publicly** via GitHub issues, discussions, or pull requests.
-2. If you believe you've found a security-related bug, we prefer that you fill out a [vulnerability report on GitHub](https://github.com/kuhl-haus/kuhl-haus-metrics/security/advisories/new) directly.
-3. Submit your report via email to `security` at `kuhl.haus` or through our private vulnerability reporting channel on GitHub.
-4. **Encrypt sensitive information** using our [PGP key](#pgp-key).
-5. Include the following details:
+**Do NOT disclose security vulnerabilities publicly via GitHub issues, discussions, or pull requests.**
+
+If you believe you've found a security-related bug, we prefer that you fill out a [vulnerability report on GitHub](https://github.com/kuhl-haus/kuhl-haus-metrics/security/advisories/new) directly.  
+
+If you do not have a GitHub account, you may submit your report via email to `security` at `kuhl.haus`. **Encrypt sensitive information** using our [PGP key](#pgp-key).
+Include the following details:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
