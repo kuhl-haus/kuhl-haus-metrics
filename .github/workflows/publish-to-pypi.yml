@@ -15,46 +15,42 @@ jobs:
       run_id: ${{ steps.set_run_id.outputs.run_id }}
 
     steps:
+    - name: Set unique run ID
+      id: set_run_id
+      run: echo "run_id=${{ github.run_id }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+    # Download and install
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Fetch all history for tags
         persist-credentials: false
-
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
-
-    - name: Install PDM
-      run: pip install --no-cache-dir pdm
-
     - name: Install dependencies
-      run: pdm install -G testing
+      run: pip install -r requirements.txt
+    - name: Install package
+      run: pdm install
 
+    # Tests
     - name: Run tests with coverage
       run: pdm run pytest --cov=kuhl_haus.metrics --cov-report=html --cov-report=xml tests -v
-
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-report
+        name: coverage-report-${{ steps.set_run_id.outputs.run_id }}
         path: htmlcov/
-
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
+    - name: Upload coverage XML
+      uses: actions/upload-artifact@v4
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: kuhl-haus/kuhl-haus-metrics
-        fail_ci_if_error: true
+        name: coverage-xml-${{ steps.set_run_id.outputs.run_id }}
+        path: coverage.xml
 
+    # Build Distribution Package
     - name: Build package
       run: pdm build
-
-    - name: Set unique run ID
-      id: set_run_id
-      run: echo "run_id=${{ github.run_id }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
-
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
       with:
@@ -203,6 +199,26 @@ jobs:
       with:
         name: python-package-distributions-${{ needs.build-and-test.outputs.run_id }}
         path: dist/
+
+    - name: Download coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-report-${{ needs.build-and-test.outputs.run_id }}
+        path: htmlcov/
+
+    - name: Download coverage XML
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-xml-${{ needs.build-and-test.outputs.run_id }}
+        path: ./
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: kuhl-haus/kuhl-haus-metrics
+        fail_ci_if_error: true
+
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
