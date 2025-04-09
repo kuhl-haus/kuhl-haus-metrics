@@ -79,9 +79,9 @@ def test_graphite_logger_init_with_basic_options(
 
     # Assert
     patched_get_logger.assert_called_once_with(
-        basic_options.application_name,
-        basic_options.log_level,
-        basic_options.log_directory
+        log_level=basic_options.log_level,
+        application_name=basic_options.application_name,
+        log_directory=basic_options.log_directory
     )
     patched_carbon_poster.assert_called_once_with(**basic_options.carbon_config)
     patched_thread_pool.assert_called_once_with(mock_logger, basic_options.thread_pool_size)
@@ -110,9 +110,9 @@ def test_graphite_logger_init_with_full_options(
 
     # Assert
     patched_get_logger.assert_called_once_with(
-        full_options.application_name,
-        full_options.log_level,
-        full_options.log_directory
+        log_level=full_options.log_level,
+        application_name=full_options.application_name,
+        log_directory=full_options.log_directory
     )
     patched_carbon_poster.assert_called_once_with(**full_options.carbon_config)
     patched_thread_pool.assert_called_once_with(mock_logger, full_options.thread_pool_size)
