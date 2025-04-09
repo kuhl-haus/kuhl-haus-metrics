@@ -41,7 +41,11 @@ class GraphiteLogger:
     pod_name: Optional[str] = POD_NAME
 
     def __init__(self, options: GraphiteLoggerOptions):
-        self.logger = get_logger(options.application_name, options.log_level, options.log_directory)
+        self.logger = get_logger(
+            log_level=options.log_level,
+            application_name=options.application_name,
+            log_directory=options.log_directory
+        )
         self.poster = CarbonPoster(**options.carbon_config)
         self.thread_pool = ThreadPool(self.logger, options.thread_pool_size)
         self.namespace_root = options.namespace_root
