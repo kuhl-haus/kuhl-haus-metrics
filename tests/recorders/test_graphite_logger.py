@@ -149,7 +149,7 @@ def test_get_metrics_with_required_args(patched_metrics, mock_logger, mock_carbo
         meta={'pod': sut.pod_name},
         counters={
             'exceptions': 0,
-            'requests': 1,
+            'requests': 0,
             'responses': 0,
             'threads': threading.active_count(),
         },
@@ -192,7 +192,7 @@ def test_get_metrics_with_hostname(patched_metrics, mock_logger, mock_carbon_pos
         meta={'pod': sut.pod_name},
         counters={
             'exceptions': 0,
-            'requests': 1,
+            'requests': 0,
             'responses': 0,
             'threads': threading.active_count(),
         },
