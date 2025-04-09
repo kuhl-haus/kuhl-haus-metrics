@@ -1,12 +1,8 @@
 from logging import Logger, getLogger, StreamHandler, FileHandler, Formatter
 from pathlib import Path
-from functools import lru_cache
-
-from kuhl_haus.metrics.env import LOG_LEVEL
 
 
-@lru_cache()
-def get_logger(application_name: str = None, log_level: str = LOG_LEVEL, log_directory: str = None) -> Logger:
+def get_logger(log_level: str, application_name: str = None, log_directory: str = None) -> Logger:
     application_name = __name__ if application_name is None else application_name
     logger: Logger = getLogger(application_name)
     logger.setLevel(log_level)

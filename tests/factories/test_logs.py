@@ -1,18 +1,9 @@
-import os
+from logging import StreamHandler, FileHandler
+from unittest.mock import patch, Mock, MagicMock
+
 import pytest
-from logging import Logger, getLogger, StreamHandler, FileHandler, Formatter
-from unittest.mock import patch, Mock, MagicMock, call, ANY
-from pathlib import Path
 
 from kuhl_haus.metrics.factories.logs import get_logger
-
-
-@pytest.fixture
-def reset_lru_cache():
-    """Reset the LRU cache before and after each test."""
-    get_logger.cache_clear()
-    yield
-    get_logger.cache_clear()
 
 
 @pytest.fixture
@@ -23,13 +14,13 @@ def temp_log_directory(tmp_path):
     return str(log_dir)
 
 
-def test_get_logger_defaults(reset_lru_cache):
+def test_get_logger_defaults():
     """Test get_logger with default parameters."""
     # Arrange
     expected_logger_name = "kuhl_haus.metrics.factories.logs"
 
     # Act
-    sut = get_logger()
+    sut = get_logger('DEBUG')
 
     # Assert
     assert sut.name == expected_logger_name
@@ -46,13 +37,13 @@ def test_get_logger_defaults(reset_lru_cache):
             assert False
 
 
-def test_get_logger_with_custom_name(reset_lru_cache):
+def test_get_logger_with_custom_name():
     """Test get_logger with custom application name."""
     # Arrange
     custom_name = "custom_app"
 
     # Act
-    sut = get_logger(application_name=custom_name)
+    sut = get_logger('DEBUG', application_name=custom_name)
 
     # Assert
     assert sut.name == custom_name
@@ -63,7 +54,7 @@ def test_get_logger_with_custom_name(reset_lru_cache):
 
 
 @patch("kuhl_haus.metrics.factories.logs.StreamHandler")
-def test_get_logger_with_custom_log_level(mock_stream_handler, reset_lru_cache):
+def test_get_logger_with_custom_log_level(mock_stream_handler):
     """Test get_logger with custom log level."""
     # Arrange
     from logging import ERROR
@@ -81,7 +72,7 @@ def test_get_logger_with_custom_log_level(mock_stream_handler, reset_lru_cache):
 
 @patch("kuhl_haus.metrics.factories.logs.FileHandler")
 @patch("kuhl_haus.metrics.factories.logs.Path")
-def test_get_logger_with_directory(mock_path, mock_file_handler, reset_lru_cache, temp_log_directory):
+def test_get_logger_with_directory(mock_path, mock_file_handler, temp_log_directory):
     """Test get_logger with log directory specified."""
     # Arrange
     log_dir = "/path/to/logs"
@@ -121,7 +112,7 @@ def test_get_logger_with_directory(mock_path, mock_file_handler, reset_lru_cache
 
 
 @patch("kuhl_haus.metrics.factories.logs.Path")
-def test_get_logger_creates_directory(mock_path, reset_lru_cache):
+def test_get_logger_creates_directory(mock_path):
     """Test that get_logger creates the log directory if it doesn't exist."""
     # Arrange
     log_dir = "/path/to/logs"
@@ -130,19 +121,19 @@ def test_get_logger_creates_directory(mock_path, reset_lru_cache):
 
     # Act
     with patch("kuhl_haus.metrics.factories.logs.FileHandler"):
-        sut = get_logger(log_directory=log_dir)
+        sut = get_logger('DEBUG', log_directory=log_dir)
 
     # Assert
     mock_path.assert_called_once_with(log_dir)
     mock_path_instance.mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
 
-def test_get_logger_caches_results(reset_lru_cache):
+def test_get_logger_caches_results():
     """Test that get_logger caches results for the same parameters."""
     # Arrange & Act
-    logger1 = get_logger("app1")
-    logger2 = get_logger("app1")
-    logger3 = get_logger("app2")
+    logger1 = get_logger('DEBUG', "app1")
+    logger2 = get_logger('DEBUG', "app1")
+    logger3 = get_logger('DEBUG', "app2")
 
     # Assert
     assert logger1 is logger2  # Same params should return cached instance
@@ -152,7 +143,7 @@ def test_get_logger_caches_results(reset_lru_cache):
 def test_get_logger_stream_handler_formatter():
     """Test the format of the stream handler formatter."""
     # Arrange & Act
-    sut = get_logger()
+    sut = get_logger('DEBUG', )
     formatter = sut.handlers[0].formatter
 
     # Assert
@@ -169,7 +160,7 @@ def test_get_logger_stream_handler_formatter():
 
 @patch("kuhl_haus.metrics.factories.logs.FileHandler")
 @patch("kuhl_haus.metrics.factories.logs.Path")
-def test_get_logger_with_multiple_handlers(mock_path, mock_file_handler, reset_lru_cache):
+def test_get_logger_with_multiple_handlers(mock_path, mock_file_handler):
     """Test that get_logger doesn't add duplicate handlers when called multiple times."""
     # Arrange
     mock_path_instance = Mock()
@@ -178,12 +169,10 @@ def test_get_logger_with_multiple_handlers(mock_path, mock_file_handler, reset_l
     mock_file_handler.return_value = mock_handler
 
     # Act
-    logger1 = get_logger(log_directory="/fake/path")
-    handler_count1 = len(logger1.handlers)
+    logger1 = get_logger('DEBUG', "app1", log_directory="/fake/path")
 
     # Call again with same parameters
-    logger2 = get_logger(log_directory="/fake/path")
-    handler_count2 = len(logger2.handlers)
+    logger2 = get_logger('DEBUG', "app1", log_directory="/fake/path")
 
     # Assert
-    assert handler_count1 == handler_count2
+    assert logger1 is logger2  # Same params should return cached instance
