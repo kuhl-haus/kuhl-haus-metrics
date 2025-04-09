@@ -62,7 +62,7 @@ class GraphiteLogger:
             },
             counters={
                 'exceptions': 0,
-                'requests': 1,
+                'requests': 0,
                 'responses': 0,
                 'threads': threading.active_count(),
             },
