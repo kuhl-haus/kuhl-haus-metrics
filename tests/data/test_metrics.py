@@ -251,7 +251,8 @@ def test_post_metrics_success_scenario(mock_logger, mock_carbon_poster):
 
     # Assert
     mock_carbon_poster.post_metrics.assert_called_once()
-    assert mock_logger.debug.call_count == 2
+    assert mock_logger.info.call_count == 1
+    assert mock_logger.debug.call_count == 1
 
 
 def test_log_metrics_success_scenario(mock_logger):
@@ -284,6 +285,32 @@ def test_version_to_float_conversion(version, expected):
 
     # Act
     result = Metrics.version_to_float(version)
+
+    # Assert
+    assert result == expected
+
+
+@pytest.mark.parametrize("version, expected", [
+    ("0.0.1", 0.0),
+    ("0.0.100", 0.0),
+    ("0.1.0", 0.001),
+    ("0.1.1", 0.001),
+    ("0.99.1", 0.099),
+    ("0.100.1", 0.100),
+    ("0.999.1", 0.999),
+    ("0.1000.1", 0.999),
+    ("1.0.0", 1.0),
+    ("1.1.0", 1.001),
+    ("1.0.1", 1.0),
+    ("1.1.1", 1.001),
+    ("1.2.3-alpha", 1.002),  # Pre-release tags should be ignored
+    ("2.0.0+build.1", 2.0),  # Build metadata should be ignored
+])
+def test_simple_version_to_float_conversion(version, expected):
+    # Arrange
+
+    # Act
+    result = Metrics.simple_version_to_float(version)
 
     # Assert
     assert result == expected
