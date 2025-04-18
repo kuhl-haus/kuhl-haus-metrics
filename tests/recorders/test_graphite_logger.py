@@ -28,6 +28,15 @@ def mock_thread_pool():
 
 
 @pytest.fixture
+def no_carbon_options():
+    return GraphiteLoggerOptions(
+        application_name="test_app",
+        log_level="INFO",
+        carbon_config={"server_ip": None, "pickle_port": 2004},
+    )
+
+
+@pytest.fixture
 def basic_options():
     return GraphiteLoggerOptions(
         application_name="test_app",
@@ -57,6 +66,47 @@ def mock_metrics():
     mock.post_metrics = MagicMock()
     mock.log_metrics = MagicMock()
     return mock
+
+
+@patch("kuhl_haus.metrics.recorders.graphite_logger.time")
+@patch("kuhl_haus.metrics.recorders.graphite_logger.random")
+def test_graphite_logger_init_with_no_carbon_options(
+        patched_random, patched_time, no_carbon_options, mock_metrics, mock_logger, mock_carbon_poster, mock_thread_pool
+):
+    """Test that log_metrics starts the expected thread pool tasks."""
+    # Arrange
+    fake_time = 0x12345678
+    patched_time.time_ns.return_value = fake_time
+    fake_random = 0x42
+    patched_random.getrandbits.return_value = fake_random
+
+    sut = GraphiteLogger(no_carbon_options)
+    sut.logger = mock_logger
+    # sut.poster = mock_carbon_poster
+    sut.thread_pool = mock_thread_pool
+
+    expected_template = f"{mock_metrics.mnemonic}_%s_{fake_time:x}_{fake_random:02x}"
+
+    # Act
+    sut.log_metrics(mock_metrics)
+
+    # Assert
+    assert mock_thread_pool.start_task.call_count == 1
+    mock_thread_pool.start_task.assert_has_calls([
+        call(
+            task_name=expected_template % "log_metrics",
+            target=mock_metrics.log_metrics,
+            kwargs={"logger": mock_logger},
+            blocking=False
+        )
+    ])
+    post_metrics_call = call(
+        task_name=expected_template % "post_metrics",
+        target=mock_metrics.post_metrics,
+        kwargs={"logger": mock_logger, "poster": mock_carbon_poster},
+        blocking=False
+    )
+    assert post_metrics_call not in mock_thread_pool.start_task.call_args_list
 
 
 @patch("kuhl_haus.metrics.recorders.graphite_logger.get_logger")

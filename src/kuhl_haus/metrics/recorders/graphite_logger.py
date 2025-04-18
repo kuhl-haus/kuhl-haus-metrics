@@ -34,8 +34,8 @@ class GraphiteLoggerOptions:
 
 class GraphiteLogger:
     logger: Logger
-    poster: CarbonPoster
     thread_pool: ThreadPool
+    poster: Optional[CarbonPoster] = None
     namespace_root: Optional[str] = NAMESPACE_ROOT
     metric_namespace: Optional[str] = METRIC_NAMESPACE
     pod_name: Optional[str] = POD_NAME
@@ -46,7 +46,11 @@ class GraphiteLogger:
             application_name=options.application_name,
             log_directory=options.log_directory
         )
-        self.poster = CarbonPoster(**options.carbon_config)
+        if "server_ip" in options.carbon_config and options.carbon_config["server_ip"] is not None:
+            self.poster = CarbonPoster(**options.carbon_config)
+        else:
+            self.poster = None
+
         self.thread_pool = ThreadPool(self.logger, options.thread_pool_size)
         self.namespace_root = options.namespace_root
         self.metric_namespace = options.metric_namespace
@@ -77,12 +81,13 @@ class GraphiteLogger:
 
     def log_metrics(self, metrics: Metrics) -> None:
         task_name_template = f"{metrics.mnemonic}_%s_{time.time_ns():x}_{random.getrandbits(8):02x}"
-        self.thread_pool.start_task(
-            task_name=task_name_template % "post_metrics",
-            target=metrics.post_metrics,
-            kwargs={"logger": self.logger, "poster": self.poster},
-            blocking=False
-        )
+        if self.poster:
+            self.thread_pool.start_task(
+                task_name=task_name_template % "post_metrics",
+                target=metrics.post_metrics,
+                kwargs={"logger": self.logger, "poster": self.poster},
+                blocking=False
+            )
         self.thread_pool.start_task(
             task_name=task_name_template % "log_metrics",
             target=metrics.log_metrics,
