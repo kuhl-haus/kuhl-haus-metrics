@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch, AsyncMock, call
 
 import pytest
 from fastapi import FastAPI
@@ -200,7 +200,7 @@ def test_request_metrics_exception_handling(
 
     metrics = mock_recorder.get_metrics.return_value
     assert metrics.attributes['exception'] == repr(test_exception)
-    metrics.set_counter.assert_called_once_with('exceptions', 1)
+    metrics.set_counter.assert_has_calls([call('requests', 1), call('exceptions', 1)])
     mock_recorder.log_metrics.assert_called_once_with(metrics)
     mock_recorder.logger.error.assert_called_once()
     assert "Unhandled exception raised" in mock_recorder.logger.error.call_args[0][0]

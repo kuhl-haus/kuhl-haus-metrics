@@ -19,6 +19,7 @@ async def request_metrics(
         mnemonic = mnemonic[1:]  # Remove the leading underscore
     metrics: Metrics = recorder.get_metrics(mnemonic=mnemonic, hostname=request.headers['host'])
     try:
+        metrics.set_counter('requests', 1)
         start_time = time.perf_counter_ns()
         response = await call_next(request)
         request_time = time.perf_counter_ns() - start_time
