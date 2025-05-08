@@ -170,16 +170,16 @@ class Metrics:
         """
         metrics = []
         tags = self.__get_tags()
-        tagged_path = f"{self.namespace}.mnemonic.{self.mnemonic}.{self.name}.%s{tags}"
+        tagged_path = f"{self.namespace}.{self.name}.mnemonic.{self.mnemonic}.%s{tags}"
         self.__add_attributes(path=tagged_path, metrics=metrics)
         self.__add_counters(path=tagged_path, metrics=metrics)
 
-        mnemonic_path = f"{self.namespace}.mnemonic.{self.mnemonic}.{self.name}.%s"
+        mnemonic_path = f"{self.namespace}.{self.name}.mnemonic.{self.mnemonic}.%s"
         self.__add_attributes(path=mnemonic_path, metrics=metrics)
         self.__add_counters(path=mnemonic_path, metrics=metrics)
         if self.hostname:
             dotless_hostname = self.hostname.replace('.', '_')
-            hostname_path = f"{self.namespace}.hostname.{dotless_hostname}.{self.name}.%s"
+            hostname_path = f"{self.namespace}.{self.name}.hostname.{dotless_hostname}.%s"
             self.__add_attributes(path=hostname_path, metrics=metrics)
             self.__add_counters(path=hostname_path, metrics=metrics)
 

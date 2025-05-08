@@ -184,6 +184,7 @@ def test_get_metrics_with_required_args(patched_metrics, mock_logger, mock_carbo
     sut.thread_pool = mock_thread_pool
     sut.namespace_root = "test_root"
     sut.metric_namespace = "test_namespace"
+    sut.application_name = "test_app"
     sut.pod_name = "test_pod"
 
     mnemonic = "test_mnemonic"
@@ -195,6 +196,7 @@ def test_get_metrics_with_required_args(patched_metrics, mock_logger, mock_carbo
     patched_metrics.assert_called_once_with(
         mnemonic=mnemonic,
         namespace=f"{sut.namespace_root}.{sut.metric_namespace}",
+        name=f"{sut.application_name}",
         hostname=None,
         meta={'pod': sut.pod_name},
         counters={
@@ -226,6 +228,7 @@ def test_get_metrics_with_hostname(patched_metrics, mock_logger, mock_carbon_pos
     sut.thread_pool = mock_thread_pool
     sut.namespace_root = "test_root"
     sut.metric_namespace = "test_namespace"
+    sut.application_name = "test_app"
     sut.pod_name = "test_pod"
 
     mnemonic = "test_mnemonic"
@@ -238,6 +241,7 @@ def test_get_metrics_with_hostname(patched_metrics, mock_logger, mock_carbon_pos
     patched_metrics.assert_called_once_with(
         mnemonic=mnemonic,
         namespace=f"{sut.namespace_root}.{sut.metric_namespace}",
+        name=f"{sut.application_name}",
         hostname=hostname,
         meta={'pod': sut.pod_name},
         counters={

@@ -35,6 +35,7 @@ class GraphiteLoggerOptions:
 class GraphiteLogger:
     logger: Logger
     thread_pool: ThreadPool
+    application_name: str
     poster: Optional[CarbonPoster] = None
     namespace_root: Optional[str] = NAMESPACE_ROOT
     metric_namespace: Optional[str] = METRIC_NAMESPACE
@@ -50,7 +51,7 @@ class GraphiteLogger:
             self.poster = CarbonPoster(**options.carbon_config)
         else:
             self.poster = None
-
+        self.application_name = options.application_name
         self.thread_pool = ThreadPool(self.logger, options.thread_pool_size)
         self.namespace_root = options.namespace_root
         self.metric_namespace = options.metric_namespace
@@ -60,6 +61,7 @@ class GraphiteLogger:
         metrics: Metrics = Metrics(
             mnemonic=mnemonic,
             namespace=f"{self.namespace_root}.{self.metric_namespace}",
+            name=self.application_name,
             hostname=hostname,
             meta={
                 'pod': self.pod_name
