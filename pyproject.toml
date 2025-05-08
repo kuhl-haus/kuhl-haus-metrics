@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "kuhl-haus-metrics"
-version = "0.2.18"
+version = "0.2.19"
 description = "Application logging and instrumentation"
 authors = [
     { name = "Tom Pounders", email = "git@oldschool.engineer" },

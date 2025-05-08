@@ -57,11 +57,11 @@ class GraphiteLogger:
         self.metric_namespace = options.metric_namespace
         self.pod_name = options.pod_name
 
-    def get_metrics(self, mnemonic: str, hostname: str = None) -> Metrics:
+    def get_metrics(self, name: str, mnemonic: str, hostname: str = None) -> Metrics:
         metrics: Metrics = Metrics(
             mnemonic=mnemonic,
             namespace=f"{self.namespace_root}.{self.metric_namespace}",
-            name=self.application_name,
+            name=name,
             hostname=hostname,
             meta={
                 'pod': self.pod_name
