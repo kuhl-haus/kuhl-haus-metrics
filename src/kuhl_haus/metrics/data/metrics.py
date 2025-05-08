@@ -69,6 +69,7 @@ class Metrics:
     """
     mnemonic: str
     namespace: str
+    name: str
     hostname: Optional[str] = ""
     timestamp: Optional[int] = -1
     meta: Optional[Dict[str, Any]] = field(default_factory=dict)
@@ -139,6 +140,7 @@ class Metrics:
             {
                 "mnemonic": self.mnemonic,
                 "namespace": self.namespace,
+                "name": self.name,
                 "timestamp": self.timestamp,
                 "meta": self.meta,
                 "attributes": self.attributes,
@@ -153,10 +155,10 @@ class Metrics:
         Provides a property accessor for generating a list of carbon metrics.
 
         This method dynamically constructs and collects metric paths based
-        on the object's namespace, mnemonic, hostname, and associated tags.
-        The paths are populated with attributes and counters using internal
-        helper methods. The result is a comprehensive list of metrics that
-        describe the state or activity related to this object under varying
+        on the object's namespace, mnemonic, name, hostname, and associated
+        tags. The paths are populated with attributes and counters using
+        internal helper methods. The result is a comprehensive list of metrics
+        that describe the state or activity related to this object under varying
         contexts.
 
         Returns:
@@ -166,16 +168,16 @@ class Metrics:
         """
         metrics = []
         tags = self.__get_tags()
-        tagged_path = f"{self.namespace}.mnemonic.{self.mnemonic}.%s{tags}"
+        tagged_path = f"{self.namespace}.mnemonic.{self.mnemonic}.{self.name}.%s{tags}"
         self.__add_attributes(path=tagged_path, metrics=metrics)
         self.__add_counters(path=tagged_path, metrics=metrics)
 
-        mnemonic_path = f"{self.namespace}.mnemonic.{self.mnemonic}.%s"
+        mnemonic_path = f"{self.namespace}.mnemonic.{self.mnemonic}.{self.name}.%s"
         self.__add_attributes(path=mnemonic_path, metrics=metrics)
         self.__add_counters(path=mnemonic_path, metrics=metrics)
         if self.hostname:
             dotless_hostname = self.hostname.replace('.', '_')
-            hostname_path = f"{self.namespace}.hostname.{dotless_hostname}.{self.mnemonic}.%s"
+            hostname_path = f"{self.namespace}.hostname.{dotless_hostname}.{self.name}.%s"
             self.__add_attributes(path=hostname_path, metrics=metrics)
             self.__add_counters(path=hostname_path, metrics=metrics)
 

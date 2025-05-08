@@ -26,7 +26,8 @@ def basic_metrics():
     """Fixture to provide a basic Metrics instance with minimal configuration."""
     return Metrics(
         mnemonic="test_metric",
-        namespace="test_namespace"
+        namespace="test_namespace",
+        name="test"
     )
 
 
@@ -36,6 +37,7 @@ def complete_metrics():
     return Metrics(
         mnemonic="test_metric",
         namespace="test_namespace",
+        name="test",
         hostname="test.host.com",
         timestamp=1600000000,
         meta={"region": "us-west", "env": "test"},
@@ -50,7 +52,7 @@ def test_post_init_sets_timestamp_when_default():
 
     with patch('kuhl_haus.metrics.data.metrics.time.time_ns', return_value=fixed_time * 1_000_000_000):
         # Act
-        sut = Metrics(mnemonic="test", namespace="test")
+        sut = Metrics(mnemonic="test", namespace="test", name="test")
 
         # Assert
         assert sut.timestamp == fixed_time
@@ -61,7 +63,7 @@ def test_post_init_preserves_timestamp_when_provided():
     provided_timestamp = 1234567890
 
     # Act
-    sut = Metrics(mnemonic="test", namespace="test", timestamp=provided_timestamp)
+    sut = Metrics(mnemonic="test", namespace="test", name="test", timestamp=provided_timestamp)
 
     # Assert
     assert sut.timestamp == provided_timestamp
@@ -69,7 +71,7 @@ def test_post_init_preserves_timestamp_when_provided():
 
 def test_declare_counters_initializes_counters_to_zero():
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
     counter_names = ["counter1", "counter2", "counter3"]
 
     # Act
@@ -83,7 +85,7 @@ def test_declare_counters_initializes_counters_to_zero():
 
 def test_set_counter_increments_existing_counter():
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
     sut.counters = {"existing": 5}
 
     # Act
@@ -95,7 +97,7 @@ def test_set_counter_increments_existing_counter():
 
 def test_set_counter_creates_new_counter():
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
 
     # Act
     sut.set_counter("new_counter", 10)
@@ -106,7 +108,7 @@ def test_set_counter_creates_new_counter():
 
 def test_set_counter_handles_negative_increments():
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
     sut.counters = {"existing": 5}
 
     # Act
@@ -122,6 +124,7 @@ def test_json_property_returns_correct_serialization(complete_metrics):
     expected = {
         "mnemonic": "test_metric",
         "namespace": "test_namespace",
+        "name": "test",
         "timestamp": 1600000000,
         "meta": {"region": "us-west", "env": "test"},
         "attributes": {"latency": 100, "memory": "200.5", "invalid": "not_a_number"},
@@ -197,6 +200,7 @@ def test_carbon_property_skips_non_numeric_attributes():
     sut = Metrics(
         mnemonic="test",
         namespace="test",
+        name="test",
         attributes={"valid": 123, "invalid": "not_a_number"}
     )
 
@@ -215,6 +219,7 @@ def test_get_tags_formats_meta_correctly():
     sut = Metrics(
         mnemonic="test",
         namespace="test",
+        name="test",
         meta={"region": "us-west", "env": "test", "empty": ""}
     )
 
@@ -230,7 +235,7 @@ def test_get_tags_formats_meta_correctly():
 @patch('traceback.format_exc', return_value="Mocked traceback")
 def test_post_metrics_handles_exceptions(mock_traceback, mock_logger, mock_carbon_poster):
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
     mock_carbon_poster.post_metrics.side_effect = RuntimeError("Test error")
 
     # Act
@@ -244,7 +249,7 @@ def test_post_metrics_handles_exceptions(mock_traceback, mock_logger, mock_carbo
 
 def test_post_metrics_success_scenario(mock_logger, mock_carbon_poster):
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test", counters={"requests": 5})
+    sut = Metrics(mnemonic="test", namespace="test", name="test", counters={"requests": 5})
 
     # Act
     sut.post_metrics(mock_logger, mock_carbon_poster)
@@ -257,7 +262,7 @@ def test_post_metrics_success_scenario(mock_logger, mock_carbon_poster):
 
 def test_log_metrics_success_scenario(mock_logger):
     # Arrange
-    sut = Metrics(mnemonic="test", namespace="test")
+    sut = Metrics(mnemonic="test", namespace="test", name="test")
 
     # Act
     sut.log_metrics(mock_logger)
@@ -344,8 +349,8 @@ def test_version_to_int_conversion(version, expected):
 
 def test_default_factory_creates_unique_instances():
     # Arrange
-    metric1 = Metrics(mnemonic="test1", namespace="test")
-    metric2 = Metrics(mnemonic="test2", namespace="test")
+    metric1 = Metrics(mnemonic="test1", namespace="test", name="test")
+    metric2 = Metrics(mnemonic="test2", namespace="test", name="test")
 
     # Act
     metric1.attributes["key"] = "value"

@@ -30,7 +30,7 @@ class ThreadPool:
         self.__cleanup_thread.start()
 
     @property
-    def thread_count(self):
+    def thread_count(self) -> int:
         with self.__mutex:
             return len(self.__threads)
 
