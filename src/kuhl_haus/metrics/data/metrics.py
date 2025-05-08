@@ -29,6 +29,8 @@ class Metrics:
         A unique identifier or short description for the object.
     namespace : str
         A namespace under which metrics are grouped or classified.
+    name: str
+        A name or identifier for the object.
     hostname : Optional[str]
         The hostname associated with the object, default is an empty string.
     timestamp : Optional[int]
