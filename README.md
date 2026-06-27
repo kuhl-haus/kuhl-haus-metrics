@@ -7,6 +7,18 @@ TODO:
 
 
 
+> [!WARNING]
+> **This project is no longer actively maintained and has been archived.**
+>
+> The functionality in `kuhl-haus-metrics` (and [kuhl-haus-canary](https://github.com/kuhl-haus/kuhl-haus-canary)) has been
+> consolidated into [Kuhl Haus Magpie](https://github.com/kuhl-haus/kuhl-haus-magpie).
+>
+> The core metrics module (`Metrics`, `CarbonPoster`, `CarbonConfig`, `get_logger`) lives at
+> [`src/kuhl_haus/magpie/metrics/`](https://github.com/kuhl-haus/kuhl-haus-magpie/tree/mainline/src/kuhl_haus/magpie/metrics)
+> in the Magpie mono-repo. Import paths change from `kuhl_haus.metrics.*` to `kuhl_haus.magpie.metrics.*`.
+>
+> No further updates will be made to this repository.
+
 # kuhl-haus-metrics
 
 [![License](https://img.shields.io/github/license/kuhl-haus/kuhl-haus-metrics)](https://github.com/kuhl-haus/kuhl-haus-metrics/blob/mainline/LICENSE.txt)
